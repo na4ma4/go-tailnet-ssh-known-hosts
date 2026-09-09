@@ -40,7 +40,7 @@ cask "${TARGET_NAME}" do
     skip "Auto-generated on release."
   end
 
-  binary "${TARGET_NAME}"
+  binary "_ssh_tailnet_knownhosts"
 
   on_macos do
     on_arm do

@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 3 {
-		fmt.Fprintln(os.Stderr, "usage: _ssh_tailnet_knownhosts HOST KEYTYPE")
+	if len(os.Args) < 2 {
+		fmt.Fprintln(os.Stderr, "usage: _ssh_tailnet_knownhosts HOST [...HOST]")
 		os.Exit(2)
 	}
 
@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	entries, err := knownhosts.Keys(status, os.Args[1], os.Args[2])
+	entries, err := knownhosts.Keys(status, os.Args[1:]...)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

@@ -1,8 +1,14 @@
-package knownhosts
+package knownhosts_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/na4ma4/go-tailnet-ssh-known-hosts/internal/knownhosts"
+)
 
 func TestKeys(t *testing.T) {
+	t.Parallel()
+
 	status := []byte(`{
 		"Peer": {
 			"node": {
@@ -19,7 +25,7 @@ func TestKeys(t *testing.T) {
 		}
 	}`)
 
-	entries, err := Keys(status, "NODE.EXAMPLE.TS.NET", "ssh-ed25519")
+	entries, err := knownhosts.Keys(status, "NODE.EXAMPLE.TS.NET", "ssh-ed25519")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,8 +35,12 @@ func TestKeys(t *testing.T) {
 }
 
 func TestKeysMatchesIP(t *testing.T) {
-	status := []byte(`{"Peer":{"node":{"TailscaleIPs":["100.100.100.10"],"Online":true,"SSHHostKeys":["ssh-ed25519 AAAA"]}}}`)
-	entries, err := Keys(status, "100.100.100.10", "ssh-ed25519")
+	t.Parallel()
+
+	status := []byte(
+		`{"Peer":{"node":{"TailscaleIPs":["100.100.100.10"],"Online":true,"SSHHostKeys":["ssh-ed25519 AAAA"]}}}`,
+	)
+	entries, err := knownhosts.Keys(status, "100.100.100.10", "ssh-ed25519")
 	if err != nil || len(entries) != 1 {
 		t.Fatalf("Keys() = %#v, %v; want one entry", entries, err)
 	}

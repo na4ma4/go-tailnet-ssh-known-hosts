@@ -31,13 +31,17 @@ func CommandOutput(ctx context.Context) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("tailscale status --json: %w: %s", err, strings.TrimSpace(string(output)))
 	}
+
 	return output, nil
 }
 
 // Keys returns known_hosts entries for host and keyType from online peers.
-func Keys(statusJSON []byte, host, keyType string) ([]string, error) {
-	if host == "" || keyType == "" {
-		return nil, errors.New("host and key type are required")
+func Keys(statusJSON []byte, hosts ...string) ([]string, error) {
+	// if keyType == "" {
+	// 	return nil, errors.New("key type is required")
+	// }
+	if len(hosts) == 0 {
+		return nil, errors.New("at least one host is required")
 	}
 
 	var status Status
@@ -48,24 +52,30 @@ func Keys(statusJSON []byte, host, keyType string) ([]string, error) {
 	entries := make([]string, 0)
 	seen := make(map[string]struct{})
 	for _, peer := range status.Peers {
-		if !peer.Online || !matchesHost(peer, host) {
+		if !peer.Online {
 			continue
 		}
-		for _, hostKey := range peer.SSHHostKeys {
-			fields := strings.Fields(hostKey)
-			if len(fields) < 2 || fields[0] != keyType {
+		for _, host := range hosts {
+			if !matchesHost(peer, host) {
 				continue
 			}
-			entry := host + " " + strings.Join(fields, " ")
-			if _, ok := seen[entry]; ok {
-				continue
+			for _, hostKey := range peer.SSHHostKeys {
+				fields := strings.Fields(hostKey)
+				if len(fields) < 2 {
+					continue
+				}
+				entry := host + " " + strings.Join(fields, " ")
+				if _, ok := seen[entry]; ok {
+					continue
+				}
+				seen[entry] = struct{}{}
+				entries = append(entries, entry)
 			}
-			seen[entry] = struct{}{}
-			entries = append(entries, entry)
 		}
 	}
 
 	sort.Strings(entries)
+
 	return entries, nil
 }
 
@@ -73,18 +83,33 @@ func matchesHost(peer PeerStatus, host string) bool {
 	if equalDNSName(peer.DNSName, host) {
 		return true
 	}
-	requestedIP, err := netip.ParseAddr(host)
-	if err != nil {
-		return false
+
+	var requestedIP netip.Addr
+	{
+		var err error
+		requestedIP, err = netip.ParseAddr(host)
+		if err != nil {
+			return false
+		}
 	}
+
 	for _, address := range peer.TailscaleIPs {
 		if ip, err := netip.ParseAddr(address); err == nil && ip == requestedIP {
 			return true
 		}
 	}
+
 	return false
 }
 
 func equalDNSName(a, b string) bool {
-	return strings.EqualFold(strings.TrimSuffix(a, "."), strings.TrimSuffix(b, "."))
+	if strings.EqualFold(strings.TrimSuffix(a, "."), strings.TrimSuffix(b, ".")) {
+		return true
+	}
+
+	if strings.HasPrefix(a, b) {
+		return true
+	}
+
+	return false
 }

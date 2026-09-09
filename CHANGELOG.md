@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.2.0...v0.2.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* go dependencies ([b93bd7a](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/commit/b93bd7a716c9626597e37ee3c02c27d63bc336ae))
+
 ## [0.2.0](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.1.0...v0.2.0) (2026-09-09)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.2.2...v0.2.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* remove postflight section from Homebrew cask generation script ([cdf16b2](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/commit/cdf16b224dfc00180a3ae81679b527ecd32481d8))
+
 ## [0.2.2](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.2.1...v0.2.2) (2026-09-09)
 
 

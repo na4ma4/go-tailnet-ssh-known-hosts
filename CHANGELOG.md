@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.2.1...v0.2.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* binary path in homebrew ([b3bba62](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/commit/b3bba6241b23f6193125bcfaeca1598b9685a0c5))
+
 ## [0.2.1](https://github.com/na4ma4/go-tailnet-ssh-known-hosts/compare/v0.2.0...v0.2.1) (2026-09-09)
 
 
